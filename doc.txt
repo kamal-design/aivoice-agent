@@ -17,3 +17,30 @@ https://www.figma.com/design/DI7Nl47h7eR3Sy75za6iXR/PrepWise---AI-Interview-Plat
 Routes
 http://localhost:3000/sign-up
 http://localhost:3000/sign-in
+
+
+https://console.firebase.google.com/project/aivoiceagent-61c52/firestore
+
+Add Firebase on your project (client.ts)
+the enable Authentication => Email/Password
+
+Add firebase Database for cloud Firestore select regin asia-south(mumbai)
+
+Click Project overview
+click web icon
+then Register your app for client
+
+then project overview settings icon click (Project settings)
+
+=> Service account tab
+=> firebase admin SDK contine to new private key
+Auto download JSON file to your env
+
+
+https://firebase.google.com/docs/admin/setup
+Add firebase AdminSDK to your server (admin.ts)
+
+https://firebase.google.com/docs/admin/setup#add-sdk
+
+
+
