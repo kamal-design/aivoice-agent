@@ -43,4 +43,8 @@ Add firebase AdminSDK to your server (admin.ts)
 https://firebase.google.com/docs/admin/setup#add-sdk
 
 
+Add library to Auth Actions
+auth, general action
+
+
 
