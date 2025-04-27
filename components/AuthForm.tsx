@@ -90,12 +90,13 @@ const AuthForm = ({ type }: { type: FormType }) => {
         router.push("/");
       }
     } catch (error) {
-      console.log(error);
+      console.log("Sign in Error:", error);
       if (error instanceof z.ZodError) {
         toast.error(`There was an error : ${error}`);
       } else {
         // Handle other errors
-        console.error("An error occurred:", error);
+        console.log("An error occurred:", error);
+        toast.error(`Invalid Credential email and password`);
       }
     }
   };
@@ -127,6 +128,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
                 name="name"
                 label="Name"
                 placeholder="Your Name"
+                type="text"
               />
             )}
             <FormField

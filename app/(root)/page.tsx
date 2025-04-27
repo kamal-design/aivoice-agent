@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const Page = () => {
+const HomePage = async () => {
   return (
     <>
       <section className="card-cta">
@@ -51,4 +51,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default HomePage;

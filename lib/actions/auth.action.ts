@@ -2,7 +2,25 @@
 
 import { auth, db } from "@/firebase/admin";
 import { cookies } from "next/headers";
-const ONE_WEEK = 60 * 60 * 24 * 7 * 1000; // 7 days
+const ONE_WEEK = 60 * 60 * 24 * 7; // 7 days
+
+export async function setSessionCookie(idToken: string) {
+  const cookieStore = await cookies();
+  const sessionCookie = await auth.createSessionCookie(idToken, {
+    expiresIn: ONE_WEEK * 1000, // milliseconds
+  });
+  cookieStore.set("session", sessionCookie, {
+    maxAge: ONE_WEEK,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    sameSite: "lax",
+  });
+  return {
+    success: true,
+    message: "Session cookie set successfully.",
+  };
+}
 
 export async function signUp(parems: SignUpParams) {
   const { uid, name, email } = parems;
@@ -29,8 +47,7 @@ export async function signUp(parems: SignUpParams) {
       success: true,
       message: "Account created successfully. Please sign in.",
     };
-  }
-  catch (error: any) {
+  } catch (error: any) {
     console.log("Error in creating a user:", error);
     if (error.code === "auth/email-already-exists") {
       return {
@@ -51,7 +68,7 @@ export async function signIn(parems: SignInParams) {
   const { email, idToken } = parems;
   try {
     const userRecord = await auth.getUserByEmail(email);
-    if (userRecord) {
+    if (!userRecord) {
       return {
         success: false,
         message: "User does not exist. create an account instead.",
@@ -62,25 +79,40 @@ export async function signIn(parems: SignInParams) {
     console.log("Error in signing in:", error);
     return {
       success: false,
-      message: "Failed to log into an account.",
+      message: "Failed to log into an account. Please try again.",
     };
   }
 }
 
-export async function setSessionCookie(idToken: string) {
+// Get current user from session cookie
+export async function getCurrentUser(): Promise<User | null> {
   const cookieStore = await cookies();
-  const sessionCookie = await auth.createSessionCookie(idToken, {
-    expiresIn: ONE_WEEK,
-  });
-  cookieStore.set("session", sessionCookie, {
-    maxAge: ONE_WEEK,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    sameSite: "lax",
-  });
-  return {
-    success: true,
-    message: "Session cookie set successfully.",
-  };
+  const sessionCookie = cookieStore.get("session")?.value;
+  if (!sessionCookie) return null;
+
+  try {
+    const decodedClaims = await auth.verifySessionCookie(sessionCookie, true);
+
+    // get user info from db
+    const userRecord = await db
+      .collection("users")
+      .doc(decodedClaims.uid)
+      .get();
+    if (!userRecord.exists) return null;
+
+    return {
+      ...userRecord.data(),
+      id: userRecord.id,
+    } as User;
+  } catch (error) {
+    console.log(error);
+    // Invalid or expired session
+    return null;
+  }
+}
+
+// Check if user is authenticated
+export async function isAuthenticated() {
+  const user = await getCurrentUser();
+  return !!user;
 }
