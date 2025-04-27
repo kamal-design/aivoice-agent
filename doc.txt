@@ -49,4 +49,39 @@ Add library to Auth Actions
 auth, general action
 
 
+Add Goolge AI Studeio API key
 
+add npm Packages => npm i ai @ai-sdk/google
+
+https://aistudio.google.com/apikey
+click button => GET API KEY
+click button => CREATE API KEY
+click button => CREATE API KEY IN New Project
+generate and COPY KEY
+
+https://console.cloud.google.com/apis/credentials?project=gen-lang-client-0835748595
+
+https://sdk.vercel.ai/docs/introduction
+
+
+ADD VAPI in Project
+
+https://dashboard.vapi.ai/workflows/2c06bbb6-55bd-4612-ad92-dcdb0c22c623
+Go to => Assistant Tab create new
+Go to => workflows Tab add create to link here
+
+
+Go to docs
+https://docs.vapi.ai/workflows
+Build Tab Web SDK
+https://docs.vapi.ai/sdk/web
+
+add npm Packages for => npm install @vapi-ai/web
+
+Go to dashboard => https://dashboard.vapi.ai/
+
+Go to => Org settings => API Keys => copy public version
+
+create library to sdk import file
+add API Routes
+app/api/vapi/generate/route.ts
