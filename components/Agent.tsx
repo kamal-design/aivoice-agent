@@ -17,14 +17,30 @@ interface SavedMessage {
 }
 
 const messages: SavedMessage[] = [
-  "I am fine, thank you! How can I assist you today?",
-  "I am looking for a job.",
-  "What kind of job are you looking for?",
-  "Can you tell me about your experience?",
+  {
+    role: "user",
+    content: "Hello, how are you?",
+  },
+  {
+    role: "assistant",
+    content: "I am fine, thank you!",
+  },
+  {
+    role: "assistant",
+    content: "How can I help you today?",
+  },
 ];
 
-const lastMessage = messages[messages.length - 1] || "";
-const callStatus = CallStatus.FINISHED;
+const lastMessage = messages[messages.length - 1]?.content || "";
+const callStatus: CallStatus = CallStatus.FINISHED;
+
+const handleCall = () => {
+  console.log("Calling...");
+};
+
+const handleDisconnect = () => {
+  console.log("Disconnecting...");
+};
 
 const Agent = ({ userName }: AgentProps) => {
   return (
@@ -77,19 +93,20 @@ const Agent = ({ userName }: AgentProps) => {
       )}
 
       <div className="w-full flex justify-center">
-        {callStatus !== "ACTIVE" ? (
+        {callStatus !== CallStatus.ACTIVE ? (
           <button className="relative btn-call" onClick={() => handleCall()}>
             <span
               className={cn(
                 "absolute animate-ping rounded-full opacity-75",
-                callStatus !== "CONNECTING" && "hidden"
+                callStatus !== CallStatus.CONNECTING && "hidden"
               )}
             />
 
             <span className="relative">
-              {callStatus === "INACTIVE" || callStatus === "FINISHED"
+              {callStatus === CallStatus.INACTIVE ||
+              callStatus === CallStatus.FINISHED
                 ? "Call"
-                : ". . ."}
+                : "..."}
             </span>
           </button>
         ) : (
