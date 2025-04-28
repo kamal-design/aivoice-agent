@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/constants";
+import { createFeedback } from "@/lib/actions/general.action";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -34,7 +35,14 @@ const messages: SavedMessage[] = [
   },
 ];
 
-const Agent = ({ userName, userId, type }: AgentProps) => {
+const Agent = ({
+  userName,
+  userId,
+  type,
+  interviewId,
+  questions,
+  feedbackId,
+}: AgentProps) => {
   const router = useRouter();
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [messages, setMessages] = useState<SavedMessage[]>([]);
@@ -88,28 +96,29 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
     };
   }, []);
 
+  const handleGenerateFeedback = async (messages: SavedMessage[]) => {
+    console.log("Generate Feedback here.");
+
+    //TOOD: Create a server action that generates feedback
+    const { success, feedbackId: id } = await createFeedback({
+      interviewId: interviewId!,
+      userId: userId!,
+      transcript: messages,
+      feedbackId,
+    });
+
+    if (success && id) {
+      router.push(`/interview/${interviewId}/feedback`);
+    } else {
+      console.log("Error saving feedback");
+      router.push("/");
+    }
+  };
+
   useEffect(() => {
     if (messages.length > 0) {
       setLastMessage(messages[messages.length - 1].content);
     }
-
-    const handleGenerateFeedback = async (messages: SavedMessage[]) => {
-      console.log("handleGenerateFeedback");
-
-      // const { success, feedbackId: id } = await createFeedback({
-      //   interviewId: interviewId!,
-      //   userId: userId!,
-      //   transcript: messages,
-      //   feedbackId,
-      // });
-
-      // if (success && id) {
-      //   router.push(`/interview/${interviewId}/feedback`);
-      // } else {
-      //   console.log("Error saving feedback");
-      //   router.push("/");
-      // }
-    };
 
     if (callStatus === CallStatus.FINISHED) {
       if (type === "generate") {
@@ -118,7 +127,7 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
         handleGenerateFeedback(messages);
       }
     }
-  }, [messages, callStatus, router, type, userId]); //feedbackId, interviewId,
+  }, [messages, callStatus, router, feedbackId, interviewId, type, userId]);
 
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);
@@ -132,11 +141,11 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
       });
     } else {
       let formattedQuestions = "";
-      // if (questions) {
-      //   formattedQuestions = questions
-      //     .map((question) => `- ${question}`)
-      //     .join("\n");
-      // }
+      if (questions) {
+        formattedQuestions = questions
+          .map((question) => `- ${question}`)
+          .join("\n");
+      }
 
       await vapi.start(interviewer, {
         variableValues: {
@@ -164,7 +173,7 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
               height={54}
               className="object-cover"
             />
-            <span className="animate-speak" />
+            {isSpeaking && <span className="animate-speak" />}
           </div>
           <h3>AI Interviewer</h3>
         </div>

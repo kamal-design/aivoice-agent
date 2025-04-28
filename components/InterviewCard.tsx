@@ -3,9 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn, getRandomInterviewCover } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { InterviewCardProps } from "@/types";
 import dayjs from "dayjs";
 import DisplayTechIcons from "./DisplayTechIcons";
+import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 
 const InterviewCard = async ({
   interviewId,

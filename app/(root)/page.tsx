@@ -1,11 +1,10 @@
 import InterviewCard from "@/components/InterviewCard";
 import { Button } from "@/components/ui/button";
-import { dummyInterviews } from "@/constants";
+import { getCurrentUser } from "@/lib/actions/auth.action";
 import {
-  getCurrentUser,
   getInterviewsByUserId,
   getLatestInterviews,
-} from "@/lib/actions/auth.action";
+} from "@/lib/actions/general.action";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -16,6 +15,7 @@ const HomePage = async () => {
     await getInterviewsByUserId(user?.id!),
     await getLatestInterviews({ userId: user?.id! }),
   ]);
+
   // const userInterviews = await getInterviewsByUserId(user?.id!);
   // const lastestInterviews = await getLatestInterviews({ userId: user?.id! });
   const hasPastInterviews = userInterviews?.length > 0;
@@ -49,7 +49,15 @@ const HomePage = async () => {
         <div className="interviews-section">
           {hasPastInterviews ? (
             userInterviews?.map((interview) => (
-              <InterviewCard key={interview.id} {...interview} />
+              <InterviewCard
+                key={interview.id}
+                userId={user?.id}
+                interviewId={interview.id}
+                role={interview.role}
+                type={interview.type}
+                techstack={interview.techstack}
+                createdAt={interview.createdAt}
+              />
             ))
           ) : (
             <p>you haven&apos;t taken any interviews yet</p>
@@ -62,7 +70,15 @@ const HomePage = async () => {
         <div className="interviews-section">
           {hasUpcomingInterviws ? (
             lastestInterviews.map((interview) => (
-              <InterviewCard key={interview.id} {...interview} />
+              <InterviewCard
+                key={interview.id}
+                userId={user?.id}
+                interviewId={interview.id}
+                role={interview.role}
+                type={interview.type}
+                techstack={interview.techstack}
+                createdAt={interview.createdAt}
+              />
             ))
           ) : (
             <p>There are no new interviews available</p>
