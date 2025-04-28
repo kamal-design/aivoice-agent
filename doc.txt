@@ -1,3 +1,7 @@
+Live URL
+https://aivoice-agent-qa7z.vercel.app/
+
+
 npm create-next-app@latest ./
 
 add NPM Packages for Project
@@ -85,3 +89,17 @@ Go to => Org settings => API Keys => copy public version
 create library to sdk import file
 add API Routes
 app/api/vapi/generate/route.ts
+
+
+Add API Request url
+https://aivoice-agent-qa7z.vercel.app/api/vapi/genetate
+Add vapi to configuration for workflows
+
+start call
+Say
+Gather
+API Request
+Say
+end Phone
+
+then new create workflows Assistant
