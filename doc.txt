@@ -102,4 +102,11 @@ API Request
 Say
 end Phone
 
-then new create workflows Assistant
+then new create workflows Assistant to link
+
+go to Assistant tab  then select voice tab to add your voice and check to talk to Assistant button to verify
+Last step Publish.
+
+
+Select your demo link ID
+https://dashboard.vapi.ai/assistants/f1da63e4-4e18-4048-bd40-fb108a695f12
